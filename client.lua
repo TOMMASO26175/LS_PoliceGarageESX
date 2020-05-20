@@ -19,37 +19,14 @@ local TextureThing = GetDuiHandle(Object)
 local Texture = CreateRuntimeTextureFromDuiHandle(RuntimeTXD, 'Custom_Menu_Head', TextureThing)
 Menuthing = "Custom_Menu_Head"
 
-
+mainMenu = nil
 _menuPool = NativeUI.CreatePool()
-mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
-_menuPool:Add(mainMenu)
-_menuPool:MouseControlsEnabled(false)
-_menuPool:MouseEdgeEnabled(false)
-_menuPool:ControlDisablingEnabled(false)
 
-
--- local cars = { "Aventador","Peugeut"}
--- function CarSpawn(menu)
---     local newitem = NativeUI.CreateListItem("Ritira Veicolo", cars, 1)
---     menu:AddItem(newitem)
---     menu.OnListChange = function (sender, item, index)
---         if item == newitem then
---             ESX.ShowNotification("ciao")
---         end
---     end
-
--- end
--- function Test(menu)
---     --  local Description = "Sample description that takes more than one line. Moreso, it takes way more than two lines since it's so long. Wow, check out this length!"
---     --  local Item = NativeUI.CreateColouredItem("Coloured item", Description, Colours.BlueLight, Colours.BlueDark)
---     --  menu:AddItem(Item)
---     -- menu.OnItemSelect = function(menu, item)
---     --    if item == Item then
---     --     -- Perform your actions here.
---     --     end
---     --  end
---     local ciao = "hekllo"
--- end
+function PoolExtra()
+    _menuPool:MouseControlsEnabled(false)
+    _menuPool:MouseEdgeEnabled(false)
+    _menuPool:ControlDisablingEnabled(false)
+end
 
 function CarSpawn(menu)
     local Veicoli = NativeUI.CreateItem("Veicolo", "Preleva questo veicolo")
@@ -66,6 +43,7 @@ end
 function CarSpawnNew(menu,carname)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
     menu:AddItem(carname)
+    _menuPool:RefreshIndex()
     menu.OnItemSelect = function(menu, item)
        if item == carname then
         Citizen.Trace("ciaooo")
@@ -73,14 +51,23 @@ function CarSpawnNew(menu,carname)
     end
 end
 
+
+function DynamicMenu()
+    mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
+    _menuPool:Add(mainMenu)
+    PoolExtra()
+    local job = "police"
+    TriggerServerEvent('lspolicegarage:getcars', job)
+    _menuPool:RefreshIndex()
+    mainMenu:Visible(not mainMenu:Visible())
+end
+
 RegisterNetEvent("lspolicegarage:carmenu")
 AddEventHandler("lspolicegarage:carmenu", function(carname,plate,stored)
     CarSpawnNew(mainMenu,carname)
 end)
 
-CarSpawn(mainMenu)
---Test(mainMenu)
-_menuPool:RefreshIndex()
+
 
 local blip   = {
     garage = {x = 437.67,  y = -1017.9, z = 28.77},
@@ -95,17 +82,11 @@ Citizen.CreateThread(function()
         if GetDistanceBetweenCoords(coords,blip.garage.x,blip.garage.y,blip.garage.z) < 2.5 then
             _menuPool:ProcessMenus()
             if IsControlJustPressed(0, 38) then
-                mainMenu:Visible(not mainMenu:Visible())
+                DynamicMenu()
             end
         end
     end
 end)
-
-
-
-
-
-
 
 
 --JUST MARKERS AND BLIPS
@@ -160,41 +141,3 @@ function DrawText3D(coords, text)
         DrawRect(_x, _y+scale/95, width, height, background.color.r, background.color.g, background.color.b , background.color.alpha)
     end
 end
-
-
-
--- pool = NativeUI.CreatePool()
--- pool:RefreshIndex()
--- newMenu = nil
--- local tableThatChangesOften = {"Value1","Value2"}
--- local tableThatChangesOftenIndex = 1
--- local tableThatChangesOftenSelection = tableThatChangesOften[tableThatChangesOftenIndex]
-
--- function AddDynamicList(menu) 
--- 	local newitem = NativeUI.CreateListItem("Dynamic", tableThatChangesOften, tableThatChangesOftenIndex)
--- 	menu:AddItem(newitem)
--- 	menu.OnListChange = function(sender, item, index)
--- 		if item == newitem then
--- 			tableThatChangesOftenIndex = index
--- 			tableThatChangesOftenSelection = item:IndexToItem(index)
--- 		end
--- 	end
--- end
-
--- function openDynamicMenu()
--- 	newMenu = NativeUI.CreateMenu("Yay", "~b~Dynamic List")
--- 	pool:Add(newMenu )
--- 	AddDynamicList(newMenu )
--- 	pool:RefreshIndex()
--- 	newMenu:Visible(true)
--- end
-
--- Citizen.CreateThread(function()
---     while true do
---         Citizen.Wait(0)
---         pool:ProcessMenus()
---         if IsControlJustPressed(1, 38) then
---             openDynamicMenu()
---         end
---     end
--- end)
