@@ -51,7 +51,6 @@ function CarSpawnNew(menu,carname)
     end
 end
 
-
 function DynamicMenu()
     mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
     _menuPool:Add(mainMenu)
