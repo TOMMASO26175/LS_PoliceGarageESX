@@ -79,8 +79,9 @@ function Localcar(menu,carname,stored,plate)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
     menu:AddItem(carname)
     _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(sender, item, index)
-       if item == carname then
+    menu.OnItemSelect = function(menu, item, index)
+    local realitem = menu:GetItemAt(index) --now you can pass at this function multiple carname and make every of it doing something different
+       if item == realitem then
         Citizen.Trace("ciaooo")
        end
     end
