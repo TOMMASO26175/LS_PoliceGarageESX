@@ -81,9 +81,9 @@ function Localcar(menu,carname,stored,plate)
     _menuPool:RefreshIndex()
     menu.OnItemSelect = function(menu, item, index)
     local realitem = menu:GetItemAt(index) --now you can pass at this function multiple carname and make every of it doing something different
-       if item == realitem then
-        Citizen.Trace("ciaooo")
-       end
+        if item == realitem then
+            Citizen.Trace("ciaooo")
+        end
     end
 end
 
@@ -92,11 +92,11 @@ function InitialCarMenu(menu,carname)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo Query")
     menu:AddItem(carname)
     _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(sender, item, index)
-        Citizen.Trace("dentroo")
-       if item == carname then
-        Citizen.Trace("ciaooo")
-       end
+    menu.OnItemSelect = function(menu, item, index)
+        local realitem = menu:GetItemAt(index)
+        if item == realitem then
+            Citizen.Trace("ciaooo")
+        end
     end
 end
 
