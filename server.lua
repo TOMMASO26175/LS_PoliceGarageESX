@@ -21,8 +21,9 @@ AddEventHandler('lspolicegarage:server:initcars', function(society)
         for k, v in ipairs(cars) do
             rows = rows + 1
         end
-        for i=1,rows do --n rows
-            TriggerClientEvent("lspolicegarage:carmenu", ped, cars[i].carname,cars[i].plate,cars[i].stored,rows)
+        for i=1,rows do --n rows lspolicegarage:client:initquerymenu
+            TriggerClientEvent("lspolicegarage:client:setuplocaltable", ped, cars[i].carname,cars[i].plate,cars[i].stored,rows)
+            TriggerClientEvent("lspolicegarage:client:initquerymenu", ped, cars[i].carname,cars[i].plate,cars[i].stored,rows)
         end
     end)
 end)

@@ -21,6 +21,9 @@ Menuthing = "Custom_Menu_Head"
 
 mainMenu = nil
 _menuPool = NativeUI.CreatePool()
+Count = 1
+CarsTable = {}
+Init = false
 
 function PoolExtra()
     _menuPool:MouseControlsEnabled(false)
@@ -28,45 +31,15 @@ function PoolExtra()
     _menuPool:ControlDisablingEnabled(false)
 end
 
+RegisterNetEvent("lspolicegarage:client:initquerymenu")
+AddEventHandler("lspolicegarage:client:initquerymenu",function(carname,plate,stored,numrows)
+    InitialCarMenu(mainMenu,carname)
+end)
 
-function CarSpawnNew(menu,carname)
-    carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
-    menu:AddItem(carname)
-    _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(menu, item)
-        Citizen.Trace("dentroo")
-       if item == carname then
-        Citizen.Trace("ciaooo")
-       end
-    end
-end
+RegisterNetEvent("lspolicegarage:client:setuplocaltable")
+AddEventHandler("lspolicegarage:client:setuplocaltable", function(carname,plate,stored,numrows)
 
-Init = false
-
-function DynamicMenu()
-    mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
-    _menuPool:Add(mainMenu)
-    PoolExtra()
-    local job = "police"
-    if Init == false then
-        TriggerServerEvent('lspolicegarage:server:initcars', job)
-        Init = true
-    else
-        TriggerEvent('lspolicegarage:client:getcars')
-        --TriggerServerEvent('lspolicegarage:server:getcars', job)
-    end
-    _menuPool:RefreshIndex()
-    mainMenu:Visible(not mainMenu:Visible())
-end
-
-Count = 1
-CarsTable = {}
-
-RegisterNetEvent("lspolicegarage:carmenu")
-AddEventHandler("lspolicegarage:carmenu", function(carname,plate,stored,numrows)
-    CarSpawnNew(mainMenu,carname)
     CurrentRows = numrows
-
     Citizen.Trace("numero di righe "..numrows)
     Citizen.Trace("\n iniziale "..Count)
 
@@ -77,12 +50,30 @@ AddEventHandler("lspolicegarage:carmenu", function(carname,plate,stored,numrows)
     Citizen.Trace("\n finale"..Count)
 end)
 
-RegisterNetEvent("lspolicegarage:client:getcars")
-AddEventHandler('lspolicegarage:client:getcars', function()
+RegisterNetEvent("lspolicegarage:client:getcarslocaltable")
+AddEventHandler('lspolicegarage:client:getcarslocaltable', function()
     for i=1,CurrentRows do
        Localcar(mainMenu,CarsTable[i].name,CarsTable[i].carplate,CarsTable[i].isstored)
     end
 end)
+
+function DynamicMenu()
+    mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
+    _menuPool:Add(mainMenu)
+    PoolExtra()
+
+    local job = "police"
+
+    if Init == false then
+        TriggerServerEvent('lspolicegarage:server:initcars', job)
+        Init = true
+    else
+        TriggerEvent('lspolicegarage:client:getcarslocaltable')
+        --TriggerServerEvent('lspolicegarage:server:getcars', job)
+    end
+    _menuPool:RefreshIndex()
+    mainMenu:Visible(not mainMenu:Visible())
+end
 
 function Localcar(menu,carname,stored,plate)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
@@ -95,6 +86,18 @@ function Localcar(menu,carname,stored,plate)
     end
 end
 
+
+function InitialCarMenu(menu,carname)
+    carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
+    menu:AddItem(carname)
+    _menuPool:RefreshIndex()
+    menu.OnItemSelect = function(menu, item)
+        Citizen.Trace("dentroo")
+       if item == carname then
+        Citizen.Trace("ciaooo")
+       end
+    end
+end
 
 
 
