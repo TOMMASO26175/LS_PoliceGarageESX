@@ -40,7 +40,7 @@ function CarSpawn(menu)
     end
 end
 
-function CarSpawnNew(menu,carname,num)
+function CarSpawnNew(menu,carname)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
     menu:AddItem(carname)
     _menuPool:RefreshIndex()
@@ -50,6 +50,7 @@ function CarSpawnNew(menu,carname,num)
        end
     end
 end
+
 
 function DynamicMenu()
     mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
@@ -62,8 +63,8 @@ function DynamicMenu()
 end
 
 RegisterNetEvent("lspolicegarage:carmenu")
-AddEventHandler("lspolicegarage:carmenu", function(carname,plate,stored,num)
-    CarSpawnNew(mainMenu,carname,num)
+AddEventHandler("lspolicegarage:carmenu", function(carname,plate,stored)
+    CarSpawnNew(mainMenu,carname)
 end)
 
 

@@ -11,11 +11,12 @@ AddEventHandler('lspolicegarage:getcars', function(society)
         ['@society'] = society
     },
     function(cars)
-        local rows
-        for k, v in pairs(cars) do
-            rows = k
+        local rows = 0
+        for k, v in ipairs(cars) do
+            rows = rows + 1
         end
-        print(cars[1].carname)
-        TriggerClientEvent("lspolicegarage:carmenu", ped, cars[1].carname,cars[1].plate,cars[1].stored,rows)
+        for i=1,rows do --n rows
+            TriggerClientEvent("lspolicegarage:carmenu", ped, cars[i].carname,cars[i].plate,cars[i].stored)
+        end
     end)
 end)
