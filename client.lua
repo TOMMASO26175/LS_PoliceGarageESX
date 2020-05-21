@@ -79,7 +79,7 @@ function Localcar(menu,carname,stored,plate)
     carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
     menu:AddItem(carname)
     _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(menu, item)
+    menu.OnItemSelect = function(sender, item, index)
        if item == carname then
         Citizen.Trace("ciaooo")
        end
@@ -88,10 +88,10 @@ end
 
 
 function InitialCarMenu(menu,carname)
-    carname = NativeUI.CreateItem(carname, "Preleva questo veicolo")
+    carname = NativeUI.CreateItem(carname, "Preleva questo veicolo Query")
     menu:AddItem(carname)
     _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(menu, item)
+    menu.OnItemSelect = function(sender, item, index)
         Citizen.Trace("dentroo")
        if item == carname then
         Citizen.Trace("ciaooo")
