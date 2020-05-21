@@ -3,8 +3,14 @@ ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 
-RegisterNetEvent('lspolicegarage:getcars')
-AddEventHandler('lspolicegarage:getcars', function(society)
+RegisterNetEvent('lspolicegarage:server:updatecars')
+AddEventHandler('lspolicegarage:server:updatecars', function(society)
+
+end)
+
+
+RegisterNetEvent('lspolicegarage:server:initcars')
+AddEventHandler('lspolicegarage:server:initcars', function(society)
     local ped = source
     print(society)
     MySQL.Async.fetchAll("SELECT * FROM police_car WHERE society = @society", {
@@ -16,7 +22,7 @@ AddEventHandler('lspolicegarage:getcars', function(society)
             rows = rows + 1
         end
         for i=1,rows do --n rows
-            TriggerClientEvent("lspolicegarage:carmenu", ped, cars[i].carname,cars[i].plate,cars[i].stored)
+            TriggerClientEvent("lspolicegarage:carmenu", ped, cars[i].carname,cars[i].plate,cars[i].stored,rows)
         end
     end)
 end)
