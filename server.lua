@@ -9,8 +9,13 @@ AddEventHandler('lspolicegarage:getcars', function(society)
     print(society)
     MySQL.Async.fetchAll("SELECT * FROM police_car WHERE society = @society", {
         ['@society'] = society
-    }, function(cars)
+    },
+    function(cars)
+        local rows
+        for k, v in pairs(cars) do
+            rows = k
+        end
         print(cars[1].carname)
-        TriggerClientEvent("lspolicegarage:carmenu", ped, cars[1].carname,cars[1].plate,cars[1].stored)
+        TriggerClientEvent("lspolicegarage:carmenu", ped, cars[1].carname,cars[1].plate,cars[1].stored,rows)
     end)
 end)
