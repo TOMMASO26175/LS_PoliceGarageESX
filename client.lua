@@ -33,21 +33,26 @@ end
 
 RegisterNetEvent("lspolicegarage:client:initquerymenu")
 AddEventHandler("lspolicegarage:client:initquerymenu",function(carname,plate,stored,numrows)
-    InitialCarMenu(mainMenu,carname)
+    print(stored)
+    if stored == true then
+        InitialCarMenu(mainMenu,carname,stored,plate)
+    else
+        NotStoredCar(mainMenu,carname,stored,plate)
+    end
 end)
 
 RegisterNetEvent("lspolicegarage:client:setuplocaltable")
 AddEventHandler("lspolicegarage:client:setuplocaltable", function(carname,plate,stored,numrows)
 
     CurrentRows = numrows
-    Citizen.Trace("numero di righe "..numrows)
-    Citizen.Trace("\n iniziale "..Count)
+    --Citizen.Trace("numero di righe "..numrows)
+    --Citizen.Trace("\n iniziale "..Count)
 
     table.insert( CarsTable,Count,{name = carname,carplate = plate,isstored = stored})
     if Count < numrows then
         Count = Count + 1
     end
-    Citizen.Trace("\n finale"..Count)
+    --Citizen.Trace("\n finale"..Count)
 end)
 
 RegisterNetEvent("lspolicegarage:client:getcarslocaltable")
@@ -88,18 +93,34 @@ function Localcar(menu,carname,stored,plate)
 end
 
 
-function InitialCarMenu(menu,carname)
-    carname = NativeUI.CreateItem(carname, "Preleva questo veicolo Query")
-    menu:AddItem(carname)
-    _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(menu, item, index)
+function InitialCarMenu(menu,carname,stored,plate)
+        carname = NativeUI.CreateItem(carname, "Preleva questo veicolo Query")
+        menu:AddItem(carname)
+        _menuPool:RefreshIndex()
+        menu.OnItemSelect = function(menu, item, index)
         local realitem = menu:GetItemAt(index)
+        print(realitem)
+        print(item)
         if item == realitem then
             Citizen.Trace("ciaooo")
         end
     end
 end
 
+function NotStoredCar(menu,carname,stored,plate)
+    carname = NativeUI.CreateItem(carname, "Questo Veicolo è fuori")
+    carname:RightLabel("Fuori",{ R = 255, G = 0, B = 0, A = 100 })
+    menu:AddItem(carname)
+    _menuPool:RefreshIndex()
+    menu.OnItemSelect = function(menu, item, index)
+        local realitem = menu:GetItemAt(index)
+       -- print(realitem)
+       -- print(item)
+        if item == realitem then
+            --exports['mythic_notify'].DoHudText('error', 'Questo Veicolo è Fuori dal garage')
+        end
+    end
+end
 
 
 
