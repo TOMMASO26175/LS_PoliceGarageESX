@@ -24,6 +24,9 @@ _menuPool = NativeUI.CreatePool()
 Count = 1
 CarsTable = {}
 Init = false
+Myindex = 0
+StoredTable = {}
+NotStoredTable = {}
 
 function PoolExtra()
     _menuPool:MouseControlsEnabled(false)
@@ -34,10 +37,15 @@ end
 RegisterNetEvent("lspolicegarage:client:initquerymenu")
 AddEventHandler("lspolicegarage:client:initquerymenu",function(carname,plate,stored,numrows)
     print(stored)
+    local amount = 1
     if stored == true then
-        InitialCarMenu(mainMenu,carname,stored,plate)
-    else
-        NotStoredCar(mainMenu,carname,stored,plate)
+        StoredTable[amount] = InitialCarMenu(mainMenu,carname,stored,plate)
+    elseif stored == false then
+        NotStoredTable[amount] = NotStoredCar(mainMenu,carname,stored,plate)
+        --InitialCarMenu(mainMenu,carname,stored,plate)
+    end
+    if amount < numrows then
+        amount = amount + 1
     end
 end)
 
@@ -62,6 +70,24 @@ AddEventHandler('lspolicegarage:client:getcarslocaltable', function()
     end
 end)
 
+RegisterNetEvent('lspolicegarage:client:onitemselect')
+AddEventHandler('lspolicegarage:client:onitemselect', function()
+    mainMenu.OnItemSelect = function(menu,item,index)
+    for k,v in pairs(StoredTable) do
+        --print(k,v)
+        if index == v then
+            print("sone dentro")
+        end
+    end
+    for k,v in pairs(NotStoredTable) do
+        --print(k,v)
+        if index == v then
+            print("non sono dentro")
+        end
+    end
+    end
+end)
+
 function DynamicMenu()
     mainMenu = NativeUI.CreateMenu("VEICOLI POLIZIA", "~b~Preleva i veicoli della polizia",nil,nil,Menuthing,Menuthing)
     _menuPool:Add(mainMenu)
@@ -71,6 +97,7 @@ function DynamicMenu()
 
     if Init == false then
         TriggerServerEvent('lspolicegarage:server:initcars', job)
+        TriggerEvent('lspolicegarage:client:onitemselect')
         Init = true
     else
         TriggerEvent('lspolicegarage:client:getcarslocaltable')
@@ -93,34 +120,53 @@ function Localcar(menu,carname,stored,plate)
 end
 
 
+
+
+
+
+
+
+
+
+
 function InitialCarMenu(menu,carname,stored,plate)
         carname = NativeUI.CreateItem(carname, "Preleva questo veicolo Query")
         menu:AddItem(carname)
+        Myindex = Myindex + 1
         _menuPool:RefreshIndex()
-        menu.OnItemSelect = function(menu, item, index)
-        local realitem = menu:GetItemAt(index)
-        print(realitem)
-        print(item)
-        if item == realitem then
-            Citizen.Trace("ciaooo")
-        end
-    end
+        return Myindex
 end
+
+-- menu.OnItemSelect = function(menu, item, index)
+--     local realitem = menu:GetItemAt(index)
+--     --print(index)
+--     --print("di qua")
+--     --print(realitem)
+--     --print(item)
+--     if item == carname then
+--         Citizen.Trace("dentro")
+--     end
+-- end
 
 function NotStoredCar(menu,carname,stored,plate)
     carname = NativeUI.CreateItem(carname, "Questo Veicolo è fuori")
     carname:RightLabel("Fuori",{ R = 255, G = 0, B = 0, A = 100 })
     menu:AddItem(carname)
+    Myindex = Myindex + 1
     _menuPool:RefreshIndex()
-    menu.OnItemSelect = function(menu, item, index)
-        local realitem = menu:GetItemAt(index)
-       -- print(realitem)
-       -- print(item)
-        if item == realitem then
-            --exports['mythic_notify'].DoHudText('error', 'Questo Veicolo è Fuori dal garage')
-        end
-    end
+    return Myindex
 end
+
+-- menu.OnItemSelect = function(menu, item, index)
+--     print(index)
+--     local realitem = menu:GetItemAt(index)
+--     print(realitem)
+--     print(item)
+--     if item == carname then
+--         --exports['mythic_notify'].DoHudText('error', 'Questo Veicolo è Fuori dal garage')
+--         print("dentrolitem")
+--     end
+-- end
 
 
 
